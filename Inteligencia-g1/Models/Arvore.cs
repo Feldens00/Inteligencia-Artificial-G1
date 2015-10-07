@@ -9,9 +9,9 @@ namespace Inteligencia_g1.Models
     public class Arvore
     {
 
-        public static List<float> listaCompleta1 = new List<float>(); //lista que armazena a outra lista que contem  os  valores padroes da imagem
-        public static List<float> listaCompleta2= new List<float>();
-        public static List<float> pesos = new List<float>();
+        public static float[,]  matrizImg1 = new float[100,100]; //matriz que armazena a outra lista que contem  os  valores padroes da imagem
+        public static float[,] matrizImg2= new float[100,100];
+        public static float[,] pesos = new float[100, 100];
 
         public static float v = 1;
         public static float soma;
@@ -21,32 +21,52 @@ namespace Inteligencia_g1.Models
 
         public static void FotoWork()
         {
-            List<float> listaByte1 = new List<float>();
-            List<float> listaByte2 = new List<float>();
-
+            List<float> listaPreto = new List<float>();
+            List<float> listaBranco = new List<float>();
+            float escala = 0;
             string imgOriginal = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"/Pictures/arvore.png";
             Bitmap img = new Bitmap(imgOriginal, true);
             Bitmap novaFoto = new Bitmap(img.Width, img.Height);
 
-            for (int i = 0;i< img.Width; i++)
+            float largura = img.Width /100;
+            float comprimento = img.Height /100;
+            for (int p = 0; p < 100; p++)
             {
-                for (int x = 0; x < img.Height; x++)
+                for (int p2 = 0; p2 < 100; p2++)
                 {
-                    Color corOriginal = img.GetPixel(i, x);
-                    int escala = (int)((corOriginal.R * 0.3) + (corOriginal.G * 0.59) + (corOriginal.B * 0.11));//escala de cinza
-                    if (escala > 0 && escala <= 110)
+                    for (int i = (p * (int)largura); i < ((p+1) * (int)largura); i++)
                     {
+                        for (int x = (p2 * (int)comprimento); x < (p2 * (int)largura); x++)
+                        {
+                            Color corOriginal = img.GetPixel(i, x);
+                            escala = (int)((corOriginal.R * 0.3) + (corOriginal.G * 0.59) + (corOriginal.B * 0.11));//escala de cinza
+                            if (escala > 0 && escala <= 110)
+                            {
 
-                        listaByte1.Add(0);
+                                listaPreto.Add(0);
+                            }
+                            if (escala > 110 && escala < 256)
+                            {
+                                listaBranco.Add(1);
+                            }
+
+                        }
                     }
-                    if (escala >= 110 && escala < 256)
+                    if (listaPreto.Count() > listaBranco.Count())
                     {
-                        listaByte1.Add(1);
+                        matrizImg1[p, p2] = 0;
                     }
+                    if (listaBranco.Count() > listaPreto.Count())
+                    {
+                        matrizImg1[p, p2] = 1;
+                    }
+                    listaPreto.Clear();
+                    listaBranco.Clear();
+
 
                 }
             }
-
+           /*
             string imgOriginal2 = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Pictures\arvore34.png";
             Bitmap img2 = new Bitmap(imgOriginal2, true);
             Bitmap novaFoto2 = new Bitmap(img2.Width, img2.Height);
@@ -79,14 +99,14 @@ namespace Inteligencia_g1.Models
             for (int x = 0; x < 10000; x++)
             {
                 pesos.Add(0);
-            }
+            }*/
 
         }
         #endregion
 
         #region Treinamento/Aprendizado
 
-        public static void Aprendizado()
+       /* public static void Aprendizado()
         {
             float y1 = 1;  //saida
             float y2 = 0;  //saida
@@ -156,7 +176,7 @@ namespace Inteligencia_g1.Models
   
             }
             
-        }
+        }*/
         #endregion
 
 
@@ -194,10 +214,59 @@ namespace Inteligencia_g1.Models
                 return listaByte;
             
         }
+        public static  void RetornoMatriz()
+        {
+            List<float> listaPreto = new List<float>();
+            List<float> listaBranco = new List<float>();
+            float escala = 0;
+            string imgOriginal = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"/Pictures/placa.png";
+            Bitmap img = new Bitmap(imgOriginal, true);
+            Bitmap novaFoto = new Bitmap(img.Width, img.Height);
+
+            float largura = img.Width / 100;
+            float comprimento = img.Height / 100;
+            for (int p = 0; p < 100; p++)
+            {
+                for (int p2 = 0; p2 < 100; p2++)
+                {
+                    for (int i = (p * (int)largura); i < ((p + 1) * (int)largura); i++)
+                    {
+                        for (int x = (p2 * (int)comprimento); x < ((p2+1) * (int)comprimento); x++)
+                        {
+                            Color corOriginal = img.GetPixel(i, x);
+                            escala = (int)((corOriginal.R * 0.3) + (corOriginal.G * 0.59) + (corOriginal.B * 0.11));//escala de cinza
+                            if (escala >= 0 && escala <= 130)
+                            {
+
+                                listaPreto.Add(0);
+                            }
+                            if (escala > 130 && escala < 256)
+                            {
+                                listaBranco.Add(1);
+                            }
+
+                        }
+                    }
+                    if (listaPreto.Count() > listaBranco.Count())
+                    {
+                        matrizImg1[p2, p] = 0;
+                    }
+                    if (listaBranco.Count() > listaPreto.Count())
+                    {
+                        matrizImg1[p2, p] = 1;
+                    }
+                    listaPreto.Clear();
+                    listaBranco.Clear();
+
+
+                }
+            }
+            
+        }
 
         #region Teste
 
- public static float Teste(List<float> Binario)
+       /* public static float Teste(List<float> Binario)
         {
             float y = 0; //saida
             float soma = 0;
@@ -218,9 +287,15 @@ namespace Inteligencia_g1.Models
             }
             return y;
         }
+        */
 
         #endregion
 
 
     }
+
+   
+
+    
+
 }

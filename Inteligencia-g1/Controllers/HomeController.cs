@@ -12,12 +12,9 @@ namespace Inteligencia_g1.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            List<float> retorno = new List<float>();
-            Arvore.FotoWork();
-            Arvore.Aprendizado();
-       retorno =   Arvore.Retorno();
-          float i=  Arvore.Teste(retorno);
-            return View(retorno);
+            Arvore.RetornoMatriz();
+            ViewBag.MatrizView = Arvore.matrizImg1;
+            return View();
         }
     }
 }
